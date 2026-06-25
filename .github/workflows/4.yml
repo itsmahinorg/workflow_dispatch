@@ -1,0 +1,43 @@
+name: workflow_dispatch_4
+
+on: 
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      debug:
+        description: "Enable debug mode"
+        required: true
+        type: boolean
+        default: false
+  push:
+    paths:
+      - "src/**"
+      - "**/*.js"
+      - '!**/*.md'
+    # paths-ignore:
+    #   - "docs/**"
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: "0 0 * * 0"
+    
+jobs:
+  versions:
+    runs-on: ubuntu-latest
+    steps:
+      - run: docker --version
+      - run: node --version
+      - run: git --version
+      - run: python --version
+      - run: aws --version
+      - run: az --version
+      - run: gcloud version
