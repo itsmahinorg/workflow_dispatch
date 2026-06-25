@@ -31,20 +31,22 @@ on:
     - cron: "0 0 * * 0"
     
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Linting..."
+  
   build:
+    needs: lint
     runs-on: ubuntu-latest
     steps:
       - run: echo "Building..."
   
   test:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - run: echo "Testing..."
-
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Linting..."
   
   deploy:
     runs-on: ubuntu-latest
