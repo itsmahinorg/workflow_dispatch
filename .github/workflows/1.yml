@@ -20,8 +20,8 @@ on:
       - "src/**"
       - "**/*.js"
       - '!**.md'
-    paths-ignore:
-      - "docs/**"
+    # paths-ignore:
+    #   - "docs/**"
     
 jobs:
   test:
