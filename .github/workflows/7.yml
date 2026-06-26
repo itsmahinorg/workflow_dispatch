@@ -44,7 +44,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - run: npm ci --prefix /src
+      - run: npm ci #--prefix /src
+        working-directory: /src
       
       # - run: npm test
       
