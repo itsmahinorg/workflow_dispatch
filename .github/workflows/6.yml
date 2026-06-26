@@ -1,0 +1,61 @@
+name: workflow_dispatch_5
+
+on: 
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      debug:
+        description: "Enable debug mode"
+        required: true
+        type: boolean
+        default: false
+  push:
+    paths:
+      - "src/**"
+      - "**/*.js"
+      - '!**/*.md'
+    # paths-ignore:
+    #   - "docs/**"
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: "0 0 * * 0"
+    
+jobs:
+  creating_artifect:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Creating an artifect
+      run: |
+        mkdir dist && touch dist/deploy.sh
+        echo 'echo "Hello World"' >> dist/deploy.sh
+        chmod +x dist/deploy.sh
+        
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-output
+        path: dist/
+        retention-days: 30
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: creating_artifect
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: build-output
+          path: ./dist
+      
+      - run: ls -la ./dist
+      
+      - run: deploy.sh
