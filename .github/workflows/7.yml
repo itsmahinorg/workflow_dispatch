@@ -1,0 +1,50 @@
+name: workflow_dispatch_7
+
+on: 
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      debug:
+        description: "Enable debug mode"
+        required: true
+        type: boolean
+        default: false
+  push:
+    paths:
+      - "src/**"
+      - "**/*.js"
+      - '!**/*.md'
+    # paths-ignore:
+    #   - "docs/**"
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: "0 0 * * 0"
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: /src #~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/src/1.md') }} #${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # - run: npm ci
+      
+      # - run: npm test
+      
